@@ -1,5 +1,7 @@
 # Fizzy Text
 
+![Screenshot](./fizzy-screenshot.png?raw=true)
+
 A Java Applet to add bubbles to an image. Originally this ran in a web browser, but modern browsers make it difficult to run applets, so the best way to run it is to use `appletviewer` which comes with the Java Development Kit.
 
 ## To build
