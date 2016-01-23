@@ -7,7 +7,7 @@ import java.awt.event.*;
 import java.awt.image.*;
 //import java.util.Vector;
 import java.net.URL;
-import java.io.BufferedReader;
+import java.io.InputStream;
 //import java.util.StringTokenizer;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -97,7 +97,6 @@ public class Fizzy extends Applet implements Runnable{
     }catch(Exception e){
       // Nothing
     }
-System.out.println("random = " + m_randomNucleii + " and colour is " + m_nucleusColour);
 
     // Load the background image.
     MediaTracker t = new MediaTracker(this);
@@ -311,7 +310,7 @@ if( pixelsAvailable != 8261 ) {
       try
       {
         // Note that sleep() is static to Thread class, and sleeps the current thread.
-        Thread.sleep(15);
+        Thread.sleep(30);
       }
       catch(InterruptedException e) {/* Do nothing. */};
     }
@@ -515,26 +514,30 @@ if( pixelsAvailable != 8261 ) {
       // Open data file from server
       URL url = new URL( getDocumentBase(), datFile );
 
-      BufferedReader dataStream = new BufferedReader(new InputStreamReader( url.openStream() ));
+      InputStream in = url.openStream();
+      byte[] sizeBuf = new byte[1];
 
       int offset = 0;
       int size;
-      while( (size = dataStream.read()) != 0 ) {
+
+      while(true) {
+        in.read(sizeBuf);
+        size = sizeBuf[0] & 0xff;
+        if( size == 0 ) break;
 
         if( size > BUBBLE_DIAM ) {
-          System.out.println("Bubble size too big!");
+          System.out.println("Bubble size too big!" + size);
           return;
         }
 
-        char[] pixbytes = new char[ size * size * 3 ];
+        byte[] pixbytes = new byte[ size * size * 3 ];
         m_textures[size-1] = new int[ size * size ];
-
-        int read = dataStream.read( pixbytes, 0, size * size * 3 );
+        int read = in.read( pixbytes, 0, size * size * 3 );
 
         // Convert bytes to pixel values
         int k=0;
         for( int j=0; j<size*size*3; j+=3 ) {
-          int pval = pixbytes[j]<<16 | pixbytes[j+1]<<8 | pixbytes[j+2];
+	    int pval = (pixbytes[j] & 0xff)<<16 | (pixbytes[j+1]&0xff)<<8 | (pixbytes[j+2]&0xff);
           m_textures[size-1][k++] = pval;
         }
       }
