@@ -1,4 +1,4 @@
-# Fizzy Text
+# Fizzy Text (2002)
 
 ![Screenshot](./fizzy-screenshot.png?raw=true)
 
